@@ -1,0 +1,12 @@
+{"folders":[
+        {
+            "path": "."
+        },
+        {
+            "path": "../vmsync/ql"
+        },
+        {
+            "name": "[cpp-simple-63806.db source archive]",
+            "uri": "codeql-zip-archive://0-66/Users/hohn/local/codeql-external-data/cpp-simple-63806.db/src.zip"
+        }
+    ]}

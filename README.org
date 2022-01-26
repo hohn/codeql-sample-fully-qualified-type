@@ -1,0 +1,49 @@
+* Fully qualified type names
+  Minimal samples of getting the fully qualified type names for a C++ function
+  signature.
+
+  - [[./example.ql]] :: uses several =Declaration= and matches them it to the types
+  - [[./example01.ql]] :: uses more specific subtypes and their =getQualifiedName()=
+    member predicate -- which underneatch *is* the =Declaration=.
+
+  These can be explored via codeql cli by itself, or using the codeql cli + the VS
+  Code plugin.  For both cases, install the cli and then run the [[*Common setup][Common setup]] and
+  the [[*Create the CodeQL database][Create the CodeQL database]] steps to get the database.
+
+** Common setup
+   In this snippet, adjust the codeql path for your own setup, then paste it in
+   bash/zsh/ksh:
+   #+BEGIN_SRC sh
+     # Add codeql cli tools to path
+     export PATH=$HOME/local/vmsync/codeql263:"$PATH"
+
+     SRCDIR=$(pwd)
+     DB=$SRCDIR/cpp-simple-$(echo $$).db
+
+     test -d "$DB" && rm -fR "$DB"
+     mkdir -p "$DB"
+   #+END_SRC
+
+** Create the CodeQL database
+   Create the CodeQL database via 
+   #+BEGIN_SRC sh
+     # The usual command 
+     codeql database create -l cpp -s $SRCDIR -j 8 -v $DB --command='./build.sh'
+     # 
+   #+END_SRC
+
+** Run a query, produce CSV output
+   #+BEGIN_SRC sh
+     # Run a query against the database, saving the results to the results/
+     # subdirectory of the database directory for further processing.
+     codeql database run-queries -j8 --ram=20000 -- $DB $SRCDIR/example.ql
+
+     # Get general info about available results
+     codeql bqrs info --format=text -- $DB/results/cpp-sample/example.bqrs 
+
+     # Format results using bqrs decode. 
+     codeql bqrs decode --output=cpp-simple.csv                              \
+            --format=csv --entities=all --                                   \
+            $DB/results/cpp-sample/example.bqrs 
+   #+END_SRC
+
